@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
                   SizedBox(height: 15,),
                   // Nama
                   Text(
-                    "Nathanael Andra Wijaya",
+                    "Fakhir Mustafa Afdal",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
                   SizedBox(height: 5,),
                   // NIM
                   Text(
-                    "21102201",
+                    "21102228",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -91,7 +91,7 @@ class MyApp extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Nama "),
-                      Text("Nathanael"),
+                      Text("Fakhir"),
                     ],
                   ),
                   SizedBox(height: 15,),
@@ -115,7 +115,7 @@ class MyApp extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Dosen Wali "),
-                      Text("NAP"),
+                      Text("DAP"),
                     ],
                   ),
                   SizedBox(height: 15,),
