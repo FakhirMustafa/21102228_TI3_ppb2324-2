@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pertemuan_9/bloc/login/login_cubit.dart';
+import 'package:pertemuan_9/ui/home_screen.dart';
+import 'package:pertemuan_9/ui/phone_auth_screen.dart';
 import '../utils/routes.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -11,9 +15,25 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final emailEdc = TextEditingController();
-  final passEdc = TextEditingController();
-  bool passInvisible = false;
+  final TextEditingController _emailEdc = TextEditingController();
+  final TextEditingController _passEdc = TextEditingController();
+  bool _passInvisible = false;
+
+  Future<void> _signInWithGoogle() async {
+    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: gAuth.accessToken,
+      idToken: gAuth.idToken,
+    );
+    await FirebaseAuth.instance.signInWithCredential(credential).then(
+          (value) async => await Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+            (route) => false,
+          ),
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               TextFormField(
-                controller: emailEdc,
+                controller: _emailEdc,
               ),
               SizedBox(height: 10),
               Text(
@@ -82,26 +102,28 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               TextFormField(
-                controller: passEdc,
+                controller: _passEdc,
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
-                    icon: Icon(passInvisible ? Icons.visibility : Icons.visibility_off),
+                    icon: Icon(
+                      _passInvisible ? Icons.visibility : Icons.visibility_off,
+                    ),
                     onPressed: () {
                       setState(() {
-                        passInvisible = !passInvisible;
+                        _passInvisible = !_passInvisible;
                       });
                     },
                   ),
                 ),
-                obscureText: !passInvisible,
+                obscureText: !_passInvisible,
               ),
               SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
                   context.read<LoginCubit>().login(
-                    email: emailEdc.text,
-                    password: passEdc.text,
-                  );
+                        email: _emailEdc.text,
+                        password: _passEdc.text,
+                      );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xff3D4DE0),
@@ -117,6 +139,38 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Colors.white,
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: 30.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: _signInWithGoogle,
+                    child: const CircleAvatar(
+                      radius: 20.0,
+                      backgroundImage: NetworkImage(
+                          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngegg.com%2Fid%2Fpng-crsck&psig=AOvVaw3jQHt4esOs5GdqeAjWOm0C&ust=1716114976225000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCPj0g86Al4YDFQAAAAAdAAAAABAE"),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 30.0,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PhoneAuthScreen()));
+                    },
+                    child: const CircleAvatar(
+                      radius: 20.0,
+                      backgroundImage: NetworkImage(
+                          "https://e7.pngegg.com/pngimages/99/465/png-clipart-telephone-open-email-email-miscellaneous-blue.png"),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 25),
               Row(
